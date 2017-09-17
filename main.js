@@ -23,3 +23,32 @@ function identityf (input) {
 
 var three = identityf(3);
 console.log(three());
+
+// write a function addf that adds from two invocations
+// addf(3)(4) --> 7
+
+function addf (a) {
+  return function (b) {
+    return add(a, b)
+  }
+}
+
+console.log(addf(3)(4));
+
+// write a function liftf that takes a binaty function
+// and makes it callable with two invocations
+// var addf = liftf(add);
+// addf(3)(4) --> 7
+// liftf(mul)(5)(6) --> 30
+
+function liftf (func) {
+  return function (a) {
+    return function (b) {
+      return func(a, b);
+    }
+  }
+}
+
+var addfunc = liftf(add);
+console.log(addfunc(3)(4));
+console.log(liftf(mul)(5)(6));
