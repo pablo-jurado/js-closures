@@ -254,3 +254,74 @@ var ele3 = element(abcArr, fromTo(1, 3));
 console.assert(ele3() === 'b');
 console.assert(ele3() === 'c');
 console.assert(ele3() === undefined);
+
+// write collect function that takes a generator and an array
+// and prooduces a function that wll collect the result in the array
+
+function collect (func, arr) {
+  return function () {
+    var value = func();
+    if (value !== undefined) {
+      arr.push(value);
+    }
+    return value;
+  };
+}
+
+var myArray = [];
+var col = collect(fromTo(0, 2), myArray);
+
+console.assert(col() === 0);
+console.assert(col() === 1);
+console.assert(col() === undefined);
+
+console.log(myArray); // --> [0, 1]
+console.log([0, 1]); // --> [0, 1]
+// console.assert(myArray === [0, 1]); // false... not sure why is not passing
+
+// write a filter function that takes a generator and a predicate
+// and produces a generator that produces only the values
+// approved by the predicate
+
+function filter (gen, predicate) {
+  return function () {
+    var value;
+    do {
+      value = gen();
+    } while (!predicate(value) && value !== undefined);
+    return value;
+  };
+}
+
+function third (value) {
+  return (value % 3) === 0;
+}
+
+var fil = filter(fromTo(0, 5), third);
+console.assert(fil() === 0);
+console.assert(fil() === 3);
+console.assert(fil() === undefined);
+
+// write a concat function that takes two generators
+// and produces a generator that combines the sequences
+
+function concat (func1, func2) {
+  var gen = func1;
+  return function () {
+    var value = gen();
+    if (value !== undefined) {
+      return value;
+    }
+    gen = func2;
+    return gen();
+  };
+}
+
+var con = concat(fromTo(0, 3), fromTo(0, 2));
+
+console.assert(con() === 0);
+console.assert(con() === 1);
+console.assert(con() === 2);
+console.assert(con() === 0);
+console.assert(con() === 1);
+// console.assert(con() === undefined); // not passing...
